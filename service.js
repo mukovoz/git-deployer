@@ -1,4 +1,5 @@
 import express from 'express';
+
 const app = express();
 import fs from 'fs'
 import {parse as YAMLParse} from 'yaml'
@@ -8,7 +9,8 @@ import ApiError from "./backend/ApiError.js";
 import {getStepInstance} from "./backend/steps.js";
 import chalk from 'chalk';
 
-if(!fs.existsSync('./config.yml')) {
+
+if (!fs.existsSync('./config.yml')) {
     console.log(chalk.red("config.yml file not found"));
     console.log(chalk.yellow("Please copy config.yml.sample to config.yml and fill it with your data."));
     process.exit(1);
@@ -16,8 +18,8 @@ if(!fs.existsSync('./config.yml')) {
 
 const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
 
-app.listen(config?.server.port, config?.server?.host,() => {
-    console.log(chalk.blue("Server started on "+chalk.green(config?.server?.host+":"+config?.server?.port)));
+app.listen(config?.server.port, config?.server?.host, () => {
+    console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));
 });
 
 app.use(bodyParser.json({
@@ -29,7 +31,7 @@ app.use(bodyParser.json({
 
 const getRepository = (id) => {
     if (!config?.repositories[id])
-         throw new ApiError('Repository not found', 404);
+        throw new ApiError('Repository not found', 404);
     return config?.repositories[id];
 }
 
@@ -42,6 +44,7 @@ app.post("/deploy/:provider/:id", (req, res) => {
             let stepResponses = [];
             repo?.steps.map(step => {
                 try {
+                    repo.result = stepResponses.join('\n');
                     stepResponses.push(getStepInstance(repo, step).run())
                 } catch (e) {
                     stepResponses.push(e.message);

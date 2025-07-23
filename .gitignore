@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 /_repositories/
 
 ecosystem.config.js
+config.yml

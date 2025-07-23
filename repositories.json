@@ -1,0 +1,13 @@
+[
+  {
+    "id": "repoa",
+    "name": "My main project",
+    "path": "/Users/oleg/Code/test-webhook-target",
+    "branch": "main",
+    "steps": [
+      "rm package-lock.json",
+      "git pull origin main",
+      "npm i"
+    ]
+  }
+]

@@ -6,6 +6,7 @@
     "chalk": "^5.4.1",
     "crypto": "^1.0.1",
     "express": "^5.1.0",
+    "node-telegram-bot-api": "^0.66.0",
     "yaml": "^2.8.0"
   },
   "type": "module",

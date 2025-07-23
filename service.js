@@ -1,9 +1,8 @@
 import express from 'express';
 
 const app = express();
-import {execSync} from "node:child_process";
 import fs from 'fs'
-import {parse as YAMLParse, stringify} from 'yaml'
+import {parse as YAMLParse} from 'yaml'
 import resolvers from "./backend/resolvers.js";
 import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";

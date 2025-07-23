@@ -1,5 +1,3 @@
-import {execSync} from "node:child_process";
-
 export class AbstractStep {
     repository;
     step;

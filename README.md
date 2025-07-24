@@ -141,6 +141,6 @@ the [LICENSE](LICENSE) file for details.
 ## Contact
 
 For any questions, suggestions, or issues, feel free to create an issue
-on [GitHub](https://github.com/:owner/:repo/issues). You can also reach out to:
+on [GitHub](https://github.com/mukovoz/git-deployer/issues). You can also reach out to:
 
-- **GitHub**: [https://github.com/mukoboz](https://github.com/mukovoz)
+- **GitHub**: [https://github.com/mukovoz](https://github.com/mukovoz)

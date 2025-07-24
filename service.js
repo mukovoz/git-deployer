@@ -20,6 +20,16 @@ const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
 
 app.listen(config?.server.port, config?.server?.host, () => {
     console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));
+    console.log('WebHooks:');
+    for (let id in config?.repositories) {
+        const _repo = config?.repositories[id];
+        console.log('\n' + chalk.bgGreen(_repo.name));
+        ['github', 'bitbucket', 'gitlab'].map(provider => {
+            console.log(chalk.bgBlue(`for ${provider}`), chalk.underline(`//${config?.server?.host}:${config?.server?.port}/deploy/github/${id}`))
+        })
+    }
+}).on('error', (e) => {
+    console.error("Server is crashed: " + e.message);
 });
 
 app.use(bodyParser.json({

@@ -34,6 +34,7 @@ const BitBucketResolver = (request, repository) => {
 }
 const GitLabResolver = () => {}
 
+
 export default {
     'github': GithubResolver,
     'bitbucket': BitBucketResolver,

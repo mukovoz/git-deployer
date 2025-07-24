@@ -113,6 +113,66 @@ https://your-domain.com:port/deploy/bitbucket/test-project
 ```
 
 
+
+### Steps 
+System support several steps types. Default one - just a string which would executed by system. 
+But you also can specify other step. Right now only `type:telegram` is supported which should allow you 
+send message to your bot, when previous steps are done.
+```yaml
+   my-pet-project-dev:
+      name: "My Pet Project [Development]"
+      secret: "XXXXXXXXXXXXXXXXX"
+      path: /var/www/staging.my-pet-project.com
+      branch: develop
+      steps:
+         - "git pull"
+         - "npm install"
+         - type: telegram
+           bot_id: "{{YOUR_BOT_ID}}"
+           chat_id: "{{CHAT_ID}}"
+           text: "<strong>{name}:{branch}</strong> was deployed \n Here is result\n: {result}"
+```
+
+### How to Retrieve `BOT_ID` and `CHAT_ID` for Telegram
+
+If you want to use the Telegram notifications feature in your deployment configuration, you'll need to retrieve the
+`BOT_ID` and `CHAT_ID`. Follow the steps below:
+
+1. **Create a New Bot**
+   - Open Telegram and search for the BotFather.
+   - Start a chat with the BotFather and use the `/newbot` command to create a new bot.
+   - Follow the instructions and you will receive a token, which is your `BOT_ID`.
+
+
+2. **Retrieve Your `CHAT_ID` Using `getUpdates`**
+   - Send a message from the Telegram account you wish to retrieve the `CHAT_ID` for to your bot.
+   - Open your browser or a tool like `curl` and make a request to the Telegram API using the `BOT_ID` (token):
+     ```bash
+     curl -s "https://api.telegram.org/bot{{YOUR_BOT_ID}}/getUpdates"
+     ```
+   - Look for the `chat` object in the response. The `id` inside the `chat` object is your `CHAT_ID`.
+   - Example response:
+     ```json
+     {
+       "ok": true,
+       "result": [
+         {
+           "message": {
+             "chat": {
+               "id": 123456789,
+               "type": "private",
+               "username": "yourusername"
+             }
+           }
+         }
+       ]
+     }
+     ```
+   - In the above example, your `CHAT_ID` is `123456789`.
+
+
+
+
 ## Contributing
 
 Contributions are welcome! Please follow the steps below:

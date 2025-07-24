@@ -9,6 +9,11 @@ import ApiError from "./backend/ApiError.js";
 import {getStepInstance} from "./backend/steps.js";
 import chalk from 'chalk';
 
+import pkg from './package.json' assert { type: 'json' };
+
+console.log('\n');
+console.log(chalk.blue(pkg.name) + " " + chalk.bgGreen(`v${pkg.version}`));
+console.log(`${pkg.description}\n`)
 
 if (!fs.existsSync('./config.yml')) {
     console.log(chalk.red("config.yml file not found"));
@@ -18,9 +23,12 @@ if (!fs.existsSync('./config.yml')) {
 
 const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
 
+const log = (message, data) => {
+    console.log(message, data);
+}
+
 app.listen(config?.server.port, config?.server?.host, () => {
     console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));
-    console.log('WebHooks:');
     for (let id in config?.repositories) {
         const _repo = config?.repositories[id];
         console.log('\n' + chalk.bgGreen(_repo.name));
@@ -41,15 +49,23 @@ app.use(bodyParser.json({
 
 const getRepository = (id) => {
     if (!config?.repositories[id])
-        throw new ApiError('Repository not found', 404);
+        throw new ApiError(`Repository [${id}] not found`, 404);
     return config?.repositories[id];
 }
 
+/**
+ *  Main webhook processor for any provider
+ * :provider - github|gitlab|bitbucket
+ * :id  - repository from config.yml
+ */
 app.post("/deploy/:provider/:id", (req, res) => {
+
+    console.log(`${req.url} triggered`);
     try {
         const {provider, id} = req.params;
         const repo = getRepository(id);
         const resolver = resolvers[provider](req, repo);
+
         if (resolver.branch === repo.branch) {
             let stepResponses = [];
             repo?.steps.map(step => {
@@ -65,6 +81,7 @@ app.post("/deploy/:provider/:id", (req, res) => {
         }
     } catch (e) {
         if (e instanceof ApiError) {
+            console.error(e.message)
             res.status(e.code || 400).send(e.message);
         } else {
             throw e;

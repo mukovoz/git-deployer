@@ -36,7 +36,6 @@ const BitBucketResolver = (request, repository) => {
 const GitLabResolver = (
     request, repository
 ) => {
-    console.log(request.headers);
     if (request.headers['x-gitlab-token'] !== repository?.secret)
         throw new Error('Invalid token from GitLab');
     return {

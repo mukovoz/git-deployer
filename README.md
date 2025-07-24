@@ -101,15 +101,15 @@ repositories:
 ### Webhooks
 In BitBucket, GitHub or GitLab you can configure webhooks for push action. After you run service you can use 
 ```bash
-http{s}://your-domain.com:port/webhook/:type/:id
+http{s}://your-domain.com:port/deploy/:type/:id
 #:type - where your repository is located - `github`, `bitbucket` or `gitlab`
 #:id - id of repository from config.yml. Example: `my-pet-project-production`
 ```
 Examples: 
 ```bash
-https://your-domain.com:port/webhook/github/my-pet-project-production
-https://your-domain.com:port/webhook/gitlab/other-project
-https://your-domain.com:port/webhook/bitbucket/test-project
+https://your-domain.com:port/deploy/github/my-pet-project-production
+https://your-domain.com:port/deploy/gitlab/other-project
+https://your-domain.com:port/deploy/bitbucket/test-project
 ```
 
 

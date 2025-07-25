@@ -9,11 +9,11 @@ import ApiError from "./backend/ApiError.js";
 import {getStepInstance} from "./backend/steps.js";
 import chalk from 'chalk';
 
-import pkg from './package.json' assert { type: 'json' };
+//import pkg from './package.json' assert { type: 'json' };
 
-console.log('\n');
-console.log(chalk.blue(pkg.name) + " " + chalk.bgGreen(`v${pkg.version}`));
-console.log(`${pkg.description}\n`)
+// console.log('\n');
+// console.log(chalk.blue(pkg.name) + " " + chalk.bgGreen(`v${pkg.version}`));
+// console.log(`${pkg.description}\n`)
 
 if (!fs.existsSync('./config.yml')) {
     console.log(chalk.red("config.yml file not found"));

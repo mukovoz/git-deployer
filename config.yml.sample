@@ -3,30 +3,29 @@ server:
   host: 0.0.0.0
   port: 3000
 repositories:
-  main:
-    name: "Main repository"
-    secret: "SECRET"
-    path: /Users/oleg/Code/test-webhook-target
-    branch: main
-    steps:
-      - "rm -rf package-lock.json"
-      - "git pull origin main"
-      - "npm install"
-      - "rm -rf _testdir"
-      - "mkdir _testdir"
-  second:
-    name: "SECOND"
-    secret: "aNL3ePP5K*KpdP@Z"
-    path: /Users/oleg/Code/bitbucket-test-target
-    branch: main
-    steps:
-      - type: telegram
-        bot_id: "asdasd"
-        chat_id: '333'
-        text: "HELLO {id} {name} {response}s"
-      - "rm -rf package-lock.json"
-      - "git pull origin main"
-      - "npm install"
-      - "rm -rf _testdir"
-      - "mkdir _testdir"
-
+   my-pet-project-production:
+      name: "My Pet Project [Live]"
+      #secret key you would need specify during webhook configuration in github, bitbucket or gitlab
+      secret: "XXXXXXXXXXXXXXXXX"
+      #path to your git repository on the server
+      path: /var/www/my-pet-project.com
+      #branch you want to track
+      branch: main
+      #steps you need to deploy your project
+      steps:
+         - "git pull origin main"
+         - "npm install"
+         - "php artisan migrate"
+         - "npm run production"
+         - "/other/commands/you may --need"
+   my-pet-project-dev:
+      name: "My Pet Project [Development]"
+      secret: "XXXXXXXXXXXXXXXXX"
+      path: /var/www/staging.my-pet-project.com
+      branch: develop
+      steps:
+         - "git pull origin main"
+         - "npm install"
+         - "php artisan migrate"
+         - "npm run dev"
+         - "/other/commands/you may --need"

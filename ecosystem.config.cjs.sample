@@ -1,0 +1,13 @@
+module.exports = {
+    apps: [
+        {
+            name: "git-deployer",
+            script: "service.js",       // Entry point of your app
+            instances: 1,               // Or "max" for all CPU cores
+            autorestart: true,
+            watch: false,               // Set to true to restart on file changes
+            max_memory_restart: "200M", // Restart if memory usage exceeds this
+
+        }
+    ]
+};

@@ -33,7 +33,7 @@ app.listen(config?.server.port, config?.server?.host, () => {
         const _repo = config?.repositories[id];
         console.log('\n' + chalk.bgGreen(_repo.name));
         ['github', 'bitbucket', 'gitlab'].map(provider => {
-            console.log(chalk.bgBlue(`for ${provider}`), chalk.underline(`//${config?.server?.host}:${config?.server?.port}/deploy/github/${id}`))
+            console.log(chalk.bgBlue(`for ${provider}`), chalk.underline(`//${config?.server?.host}:${config?.server?.port}/deploy/${provider}/${id}`))
         })
     }
 }).on('error', (e) => {

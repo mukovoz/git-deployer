@@ -3,29 +3,33 @@ server:
   host: 0.0.0.0
   port: 3000
 repositories:
-   my-pet-project-production:
-      name: "My Pet Project [Live]"
-      #secret key you would need specify during webhook configuration in github, bitbucket or gitlab
-      secret: "XXXXXXXXXXXXXXXXX"
-      #path to your git repository on the server
-      path: /var/www/my-pet-project.com
-      #branch you want to track
-      branch: main
-      #steps you need to deploy your project
-      steps:
-         - "git pull origin main"
-         - "npm install"
-         - "php artisan migrate"
-         - "npm run production"
-         - "/other/commands/you may --need"
-   my-pet-project-dev:
-      name: "My Pet Project [Development]"
-      secret: "XXXXXXXXXXXXXXXXX"
-      path: /var/www/staging.my-pet-project.com
-      branch: develop
-      steps:
-         - "git pull origin main"
-         - "npm install"
-         - "php artisan migrate"
-         - "npm run dev"
-         - "/other/commands/you may --need"
+  my-pet-project-production:
+    name: "My Pet Project [Live]"
+    #secret key you would need specify during webhook configuration in github, bitbucket or gitlab
+    secret: "XXXXXXXXXXXXXXXXX"
+    #path to your git repository on the server
+    path: /var/www/my-pet-project.com
+    #branch you want to track
+    branch: main
+    #steps you need to deploy your project
+    steps:
+      - "git pull origin main"
+      - "npm install"
+      - "php artisan migrate"
+      - "npm run production"
+      - "/other/commands/you may --need"
+      - type: telegram
+        bot_id: "{{YOUR_BOT_ID}}"
+        chat_id: "{{CHAT_ID}}"
+        text: "<strong>{name}:{branch}</strong> was deployed \n Here is result\n: {result}"
+  my-pet-project-dev:
+    name: "My Pet Project [Development]"
+    secret: "XXXXXXXXXXXXXXXXX"
+    path: /var/www/staging.my-pet-project.com
+    branch: develop
+    steps:
+      - "git pull origin main"
+      - "npm install"
+      - "php artisan migrate"
+      - "npm run dev"
+      - "/other/commands/you may --need"

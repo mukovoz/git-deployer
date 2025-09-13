@@ -35,7 +35,7 @@ To get started with this project, follow the steps below:
    npm install
    ```
 
-3. Configure:   [Usage](##Usage)
+3. Configure:   [Usage](#usage)
    ```bash
    cp config.yml.sample config.yml
    ```

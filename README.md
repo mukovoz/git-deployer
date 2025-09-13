@@ -35,11 +35,11 @@ To get started with this project, follow the steps below:
    npm install
    ```
 
-3. Configure:
+3. Configure:   [Usage](##Usage)
    ```bash
-   cp ecosystem.config.cjs.sample ecosystem.config.cjs
    cp config.yml.sample config.yml
    ```
+
 
 
 4. Start the application:
@@ -50,6 +50,7 @@ To get started with this project, follow the steps below:
 
 5. Run it with service manager **(optional)**. It will keep your application in background as process and it will restart if it fail.
    ```bash
+   cp ecosystem.config.cjs.sample ecosystem.config.cjs
    #install node process manager
    npm i -g pm2
    #start service

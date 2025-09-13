@@ -5,13 +5,15 @@
 [![Issues](https://img.shields.io/github/issues/:owner/:repo.svg)](https://github.com/:owner/:repo/issues)
 
 ## Description
-
 Lightweight solution for automatically deploy your code from **GitHub**, **BitBucket** and ~~GitLab~~
+
+
 ## Features
 
-- Based on webhooks
+- Backend for webhooks
 - Support multiple repositories
 - Fully configurable
+- Notifications to Telegram Bots
 
 ## Table of Contents
 
@@ -61,7 +63,7 @@ To get started with this project, follow the steps below:
 
 ## Usage
 
-Main configuration `config.yml` contain `server`  and `repositories` sections. Below you can see how to configure 2 or more repositories on same server.
+Main configuration `config.yml` contain `server`  and `repositories` sections. Below you can see how to configure two or more repositories on same server. 
 
 ```yaml
 #this section allow you specify web-server details 
@@ -70,7 +72,7 @@ server:
   host: 0.0.0.0
   port: 3000
 repositories:
-   my-pet-project-production:
+   my-pet-project-production: #this is repository key. You are free to define whatever you want. you would need supply it via webhook URL
       name: "My Pet Project [Live]"
       #secret key you would need specify during webhook configuration in github, bitbucket or gitlab
       secret: "XXXXXXXXXXXXXXXXX"

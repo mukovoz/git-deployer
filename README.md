@@ -80,6 +80,10 @@ repositories:
       path: /var/www/my-pet-project.com
       #branch you want to track
       branch: main
+      # Auto mode will deploy things automatically without webhook. Defaults to false.
+      auto: true
+      # How often (in seconds) auto mode checks the remote for new commits. Only used when auto: true. Defaults to 60.
+      auto_timeout: 60
       #steps you need to deploy your project
       steps:
          - "git pull origin main"
@@ -116,6 +120,13 @@ https://your-domain.com:port/deploy/bitbucket/test-project
 ```
 
 
+
+### Auto Mode
+Instead of (or in addition to) configuring a webhook, you can set `auto: true` on a repository. The service will
+then poll the remote on an interval — running `git fetch` and checking whether the tracked `branch` has new commits —
+and if so, deploy automatically by running that repository's `steps`. `auto` defaults to `false` (webhook-only).
+The poll interval is controlled by `auto_timeout` (seconds), which defaults to `60` when omitted. Every check is
+logged to the console, whether or not new commits were found.
 
 ### Steps 
 System support several steps types. Default one - just a string which would executed by system. 

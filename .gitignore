@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 
 ecosystem.config.cjs
 config.yml
+
+# JetBrains IDE project files
+.idea/

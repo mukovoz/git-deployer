@@ -6,7 +6,8 @@ import {parse as YAMLParse} from 'yaml'
 import resolvers from "./backend/resolvers.js";
 import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";
-import {getStepInstance} from "./backend/steps.js";
+import {runSteps} from "./backend/deploy.js";
+import {startAutoDeploy} from "./backend/autoDeploy.js";
 import chalk from 'chalk';
 
 //import pkg from './package.json' assert { type: 'json' };
@@ -40,6 +41,8 @@ app.listen(config?.server.port, config?.server?.host, () => {
     console.error("Server is crashed: " + e.message);
 });
 
+startAutoDeploy(config?.repositories);
+
 app.use(bodyParser.json({
     verify: (req, res, buf) => {
         req.rawBody = buf.toString();
@@ -67,17 +70,7 @@ app.post("/deploy/:provider/:id", (req, res) => {
         const resolver = resolvers[provider](req, repo);
 
         if (resolver.branch === repo.branch) {
-            let stepResponses = [];
-            repo?.steps.map(step => {
-                try {
-                    repo.result = stepResponses.join('\n');
-                    stepResponses.push(getStepInstance(repo, step).run())
-                } catch (e) {
-                    stepResponses.push(e.message);
-                    console.error(e.message);
-                }
-            });
-            res.status(200).send(stepResponses);
+            res.status(200).send(runSteps(repo));
         }
     } catch (e) {
         if (e instanceof ApiError) {

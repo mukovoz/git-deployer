@@ -8,6 +8,7 @@ import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";
 import {runSteps} from "./backend/deploy.js";
 import {startAutoDeploy} from "./backend/autoDeploy.js";
+import {getActiveBranch} from "./backend/git.js";
 import chalk from 'chalk';
 
 //import pkg from './package.json' assert { type: 'json' };
@@ -23,6 +24,18 @@ if (!fs.existsSync('./config.yml')) {
 }
 
 const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
+
+for (let id in config?.repositories) {
+    const repo = config.repositories[id];
+    if (!repo.branch) {
+        try {
+            repo.branch = getActiveBranch(repo.path);
+            console.log(chalk.blue(`[${repo.name}] no branch configured, using active branch "${repo.branch}"`));
+        } catch (e) {
+            console.error(chalk.red(`[${repo.name}] failed to detect active branch: ${e.message}`));
+        }
+    }
+}
 
 const log = (message, data) => {
     console.log(message, data);

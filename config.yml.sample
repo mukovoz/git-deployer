@@ -9,7 +9,7 @@ repositories:
     secret: "XXXXXXXXXXXXXXXXX"
     #path to your git repository on the server
     path: /var/www/my-pet-project.com
-    #branch you want to track
+    #branch you want to track. Optional - if omitted, the repository's currently checked out branch (at `path`) is used.
     branch: main
     # Auto mode will deploy things automatically without webhook. Defaults to false.
     auto: true

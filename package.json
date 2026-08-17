@@ -1,6 +1,6 @@
 {
   "author": "Oleg Mukovoz",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "name": "git-deployer",
   "description": "Lightweight webhook backend for deploy from Github, Gitlab and BitBucket repositories",
   "homepage": "https://github.com/mukovoz/git-deployer",
@@ -15,12 +15,12 @@
     "node": ">=16.0.0"
   },
   "dependencies": {
-    "body-parser": "^2.2.0",
+    "body-parser": "2.3.0",
     "chalk": "^5.4.1",
     "crypto": "^1.0.1",
     "express": "^5.1.0",
     "node-telegram-bot-api": "^0.66.0",
-    "yaml": "^2.8.0"
+    "yaml": "2.8.3"
   },
   "type": "module",
   "devDependencies": {

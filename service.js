@@ -6,7 +6,9 @@ import {parse as YAMLParse} from 'yaml'
 import resolvers from "./backend/resolvers.js";
 import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";
-import {getStepInstance} from "./backend/steps.js";
+import {runSteps} from "./backend/deploy.js";
+import {startAutoDeploy} from "./backend/autoDeploy.js";
+import {getActiveBranch} from "./backend/git.js";
 import chalk from 'chalk';
 
 //import pkg from './package.json' assert { type: 'json' };
@@ -23,9 +25,19 @@ if (!fs.existsSync('./config.yml')) {
 
 const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
 
-const log = (message, data) => {
-    console.log(message, data);
+for (let id in config?.repositories) {
+    const repo = config.repositories[id];
+    if (!repo.branch) {
+        try {
+            repo.branch = getActiveBranch(repo.path);
+            console.log(chalk.blue(`[${repo.name}] no branch configured, using active branch "${repo.branch}"`));
+        } catch (e) {
+            console.error(chalk.red(`[${repo.name}] failed to detect active branch: ${e.message}`));
+        }
+    }
 }
+
+
 
 app.listen(config?.server.port, config?.server?.host, () => {
     console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));
@@ -39,6 +51,8 @@ app.listen(config?.server.port, config?.server?.host, () => {
 }).on('error', (e) => {
     console.error("Server is crashed: " + e.message);
 });
+
+startAutoDeploy(config?.repositories);
 
 app.use(bodyParser.json({
     verify: (req, res, buf) => {
@@ -67,17 +81,7 @@ app.post("/deploy/:provider/:id", (req, res) => {
         const resolver = resolvers[provider](req, repo);
 
         if (resolver.branch === repo.branch) {
-            let stepResponses = [];
-            repo?.steps.map(step => {
-                try {
-                    repo.result = stepResponses.join('\n');
-                    stepResponses.push(getStepInstance(repo, step).run())
-                } catch (e) {
-                    stepResponses.push(e.message);
-                    console.error(e.message);
-                }
-            });
-            res.status(200).send(stepResponses);
+            res.status(200).send(runSteps(repo));
         }
     } catch (e) {
         if (e instanceof ApiError) {

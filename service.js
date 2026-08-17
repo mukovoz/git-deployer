@@ -37,9 +37,7 @@ for (let id in config?.repositories) {
     }
 }
 
-const log = (message, data) => {
-    console.log(message, data);
-}
+
 
 app.listen(config?.server.port, config?.server?.host, () => {
     console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));

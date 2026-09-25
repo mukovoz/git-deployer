@@ -68,6 +68,25 @@ const getRepository = (id) => {
 }
 
 /**
+ *  Status page to check the webhook URL in a browser
+ */
+app.get("/deploy/:provider/:id", (req, res) => {
+    try {
+        const {provider, id} = req.params;
+        const repo = getRepository(id);
+        if (!resolvers[provider])
+            throw new ApiError(`Provider [${provider}] not supported`, 404);
+        res.type('text').send(`${repo.name} Waiting webhooks from ${provider}`);
+    } catch (e) {
+        if (e instanceof ApiError) {
+            res.status(e.code).send(e.message);
+        } else {
+            throw e;
+        }
+    }
+});
+
+/**
  *  Main webhook processor for any provider
  * :provider - github|gitlab|bitbucket
  * :id  - repository from config.yml

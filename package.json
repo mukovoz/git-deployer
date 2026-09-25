@@ -1,6 +1,6 @@
 {
   "author": "Oleg Mukovoz",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "name": "git-deployer",
   "description": "Lightweight webhook backend for deploy from Github, Gitlab and BitBucket repositories",
   "homepage": "https://github.com/mukovoz/git-deployer",

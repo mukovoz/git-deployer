@@ -7,6 +7,7 @@ import resolvers from "./backend/resolvers.js";
 import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";
 import {runSteps} from "./backend/deploy.js";
+import {createLogger} from "./backend/logger.js";
 import {startAutoDeploy} from "./backend/autoDeploy.js";
 import {getActiveBranch} from "./backend/git.js";
 import chalk from 'chalk';
@@ -94,21 +95,25 @@ app.get("/deploy/:provider/:id", (req, res) => {
 app.post("/deploy/:provider/:id", (req, res) => {
 
     console.log(`${req.url} triggered`);
+    let logger = null;
     try {
         const {provider, id} = req.params;
         const repo = getRepository(id);
+        logger = createLogger(repo);
+        if (!resolvers[provider])
+            throw new ApiError(`Provider [${provider}] not supported`, 404);
         const resolver = resolvers[provider](req, repo);
 
-        if (resolver.branch === repo.branch) {
-            res.status(200).send(runSteps(repo, `webhook ${provider}`));
+        if (resolver.branch !== repo.branch) {
+            const message = `Webhook ${provider} skipped: pushed branch "${resolver.branch}", tracking "${repo.branch}"`;
+            logger.info(message);
+            return res.status(200).send(message);
         }
+        res.status(200).send(runSteps(repo, `webhook ${provider}`));
     } catch (e) {
-        if (e instanceof ApiError) {
-            console.error(e.message)
-            res.status(e.code || 400).send(e.message);
-        } else {
-            throw e;
-        }
+        const message = `Webhook ${req.params.provider} rejected: ${e.message}`;
+        logger ? logger.error(message) : console.error(chalk.red(message));
+        res.status(e instanceof ApiError ? e.code : 500).send(e instanceof ApiError ? e.message : 'Internal error');
     }
 });
 

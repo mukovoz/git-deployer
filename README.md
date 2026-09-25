@@ -84,6 +84,8 @@ repositories:
       auto: true
       # How often (in seconds) auto mode checks the remote for new commits. Only used when auto: true. Defaults to 60.
       auto_timeout: 60
+      # Optional file for deploy logs (every step's start, output and result). Relative to the service directory or absolute.
+      log: logs/my-pet-project-production.log
       #steps you need to deploy your project
       steps:
          - "git pull origin main"
@@ -109,7 +111,7 @@ repositories:
 In BitBucket, GitHub or GitLab you can configure webhooks for push action. After you run service you can use 
 ```bash
 http{s}://your-domain.com:port/deploy/:type/:id
-#:type - where your repository is located - `github`, `bitbucket` or `gitlab`
+#:type - where your repository is located - `github`, `bitbucket`, `gitlab` or `custom`
 #:id - id of repository from config.yml. Example: `my-pet-project-production`
 ```
 Examples: 
@@ -117,6 +119,18 @@ Examples:
 https://your-domain.com:port/deploy/github/my-pet-project-production
 https://your-domain.com:port/deploy/gitlab/other-project
 https://your-domain.com:port/deploy/bitbucket/test-project
+https://your-domain.com:port/deploy/custom/my-pet-project-production
+```
+
+### Custom Webhook
+Use the `custom` type to trigger a deploy from anywhere else (CI pipelines, scripts, `curl`). The request is
+authorized with the repository `secret` passed as a Bearer token. Optionally pass `branch` in a JSON body — the deploy
+runs only if it matches the configured `branch`. If omitted, the configured branch is deployed.
+```bash
+curl -X POST https://your-domain.com:port/deploy/custom/my-pet-project-production \
+     -H "Authorization: Bearer XXXXXXXXXXXXXXXXX" \
+     -H "Content-Type: application/json" \
+     -d '{"branch": "main"}'
 ```
 
 
@@ -127,6 +141,19 @@ then poll the remote on an interval — running `git fetch` and checking whether
 and if so, deploy automatically by running that repository's `steps`. `auto` defaults to `false` (webhook-only).
 The poll interval is controlled by `auto_timeout` (seconds), which defaults to `60` when omitted. Every check is
 logged to the console, whether or not new commits were found.
+
+### Logs
+Every deploy prints each step as it runs — when it started, its output (stdout and stderr), whether it succeeded
+or failed, and how long it took — followed by a summary. Set `log` on a repository to also append the same lines,
+with timestamps, to a file. The directory is created if needed.
+```
+[2026-09-25T05:45:35.561Z] [INFO] [My Pet Project [Live]] Deploy started (webhook github), branch main, 3 step(s)
+[2026-09-25T05:45:35.561Z] [INFO] [My Pet Project [Live]] Step 1/3 [git pull origin main] started
+[2026-09-25T05:45:35.570Z] [OUTPUT] [My Pet Project [Live]]     Already up to date.
+[2026-09-25T05:45:35.570Z] [INFO] [My Pet Project [Live]] Step 1/3 [git pull origin main] done in 9ms
+...
+[2026-09-25T05:45:41.580Z] [INFO] [My Pet Project [Live]] Deploy finished in 6019ms: 3 succeeded, 0 failed
+```
 
 ### Steps 
 System support several steps types. Default one - just a string which would executed by system. 

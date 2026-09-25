@@ -46,8 +46,7 @@ export function startAutoDeploy(repositories) {
                     return;
                 }
                 console.log(chalk.green(`[${repo.name}] new commits found: ${local.slice(0, 7)} -> ${remote.slice(0, 7)}, deploying...`));
-                const stepResponses = runSteps(repo);
-                console.log(chalk.bgGreen(`[${repo.name}] auto-deploy finished`), stepResponses.join('\n'));
+                runSteps(repo, `auto ${local.slice(0, 7)} -> ${remote.slice(0, 7)}`);
             } catch (e) {
                 console.error(chalk.red(`[${repo.name}] auto-deploy check failed: ${e.message}`));
             } finally {

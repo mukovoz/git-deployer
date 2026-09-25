@@ -44,7 +44,7 @@ app.listen(config?.server.port, config?.server?.host, () => {
     for (let id in config?.repositories) {
         const _repo = config?.repositories[id];
         console.log('\n' + chalk.bgGreen(_repo.name));
-        ['github', 'bitbucket', 'gitlab'].map(provider => {
+        Object.keys(resolvers).map(provider => {
             console.log(chalk.bgBlue(`for ${provider}`), chalk.underline(`//${config?.server?.host}:${config?.server?.port}/deploy/${provider}/${id}`))
         })
     }
@@ -88,7 +88,7 @@ app.get("/deploy/:provider/:id", (req, res) => {
 
 /**
  *  Main webhook processor for any provider
- * :provider - github|gitlab|bitbucket
+ * :provider - github|gitlab|bitbucket|custom
  * :id  - repository from config.yml
  */
 app.post("/deploy/:provider/:id", (req, res) => {
@@ -100,7 +100,7 @@ app.post("/deploy/:provider/:id", (req, res) => {
         const resolver = resolvers[provider](req, repo);
 
         if (resolver.branch === repo.branch) {
-            res.status(200).send(runSteps(repo));
+            res.status(200).send(runSteps(repo, `webhook ${provider}`));
         }
     } catch (e) {
         if (e instanceof ApiError) {

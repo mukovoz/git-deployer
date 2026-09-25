@@ -43,9 +43,29 @@ const GitLabResolver = (
     }
 }
 
+/**
+ * Custom integrations (CI, scripts, curl) authorize with "Authorization: Bearer <secret>".
+ * Branch can be passed in JSON body as {"branch": "..."}, otherwise the configured branch is deployed.
+ */
+const CustomResolver = (request, repository) => {
+    const [scheme, token] = (request.headers['authorization'] || '').split(' ');
+    if (scheme?.toLowerCase() !== 'bearer' || !token)
+        throw new Error('Bearer token is missed');
+
+    const expected = Buffer.from(String(repository?.secret ?? ''));
+    const actual = Buffer.from(token);
+    if (!expected.length || expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual))
+        throw new Error('Invalid bearer token');
+
+    return {
+        branch: request.json?.branch ?? repository?.branch
+    }
+}
+
 
 export default {
     'github': GithubResolver,
     'bitbucket': BitBucketResolver,
-    'gitlab': GitLabResolver
+    'gitlab': GitLabResolver,
+    'custom': CustomResolver
 }

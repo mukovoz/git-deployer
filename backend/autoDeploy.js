@@ -15,7 +15,7 @@ const resolveTimeoutMs = (repo) => {
     return timeout * 1000;
 }
 
-const hasNewCommits = (repo) => {
+export const hasNewCommits = (repo) => {
     execSync(`git -C ${repo.path} fetch origin ${repo.branch}`, {stdio: 'pipe'});
     const local = execSync(`git -C ${repo.path} rev-parse HEAD`, {stdio: 'pipe'}).toString().trim();
     const remote = execSync(`git -C ${repo.path} rev-parse origin/${repo.branch}`, {stdio: 'pipe'}).toString().trim();

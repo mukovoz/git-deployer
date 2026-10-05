@@ -1,15 +1,13 @@
 import express from 'express';
 
 const app = express();
-import fs from 'fs'
-import {parse as YAMLParse} from 'yaml'
 import resolvers from "./backend/resolvers.js";
 import bodyParser from "body-parser";
 import ApiError from "./backend/ApiError.js";
 import {runSteps} from "./backend/deploy.js";
 import {createLogger} from "./backend/logger.js";
 import {startAutoDeploy} from "./backend/autoDeploy.js";
-import {getActiveBranch} from "./backend/git.js";
+import {loadConfig} from "./backend/config.js";
 import chalk from 'chalk';
 
 //import pkg from './package.json' assert { type: 'json' };
@@ -18,27 +16,7 @@ import chalk from 'chalk';
 // console.log(chalk.blue(pkg.name) + " " + chalk.bgGreen(`v${pkg.version}`));
 // console.log(`${pkg.description}\n`)
 
-if (!fs.existsSync('./config.yml')) {
-    console.log(chalk.red("config.yml file not found"));
-    console.log(chalk.yellow("Please copy config.yml.sample to config.yml and fill it with your data."));
-    process.exit(1);
-}
-
-const config = YAMLParse(fs.readFileSync('./config.yml', 'utf8'));
-
-for (let id in config?.repositories) {
-    const repo = config.repositories[id];
-    if (!repo.branch) {
-        try {
-            repo.branch = getActiveBranch(repo.path);
-            console.log(chalk.blue(`[${repo.name}] no branch configured, using active branch "${repo.branch}"`));
-        } catch (e) {
-            console.error(chalk.red(`[${repo.name}] failed to detect active branch: ${e.message}`));
-        }
-    }
-}
-
-
+const config = loadConfig();
 
 app.listen(config?.server.port, config?.server?.host, () => {
     console.log(chalk.blue("Server started on " + chalk.green(config?.server?.host + ":" + config?.server?.port)));

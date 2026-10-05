@@ -8,6 +8,8 @@ const stepsDefinitions = {
     'empty': Empty,
 }
 
+export const isKnownStepType = (step) => typeof step === 'string' || !!stepsDefinitions[step?.type];
+
 export function getStepInstance(repository, step) {
     if (typeof step === 'string') {
         step = {

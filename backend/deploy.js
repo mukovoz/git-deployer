@@ -1,12 +1,12 @@
 import {getStepInstance} from "./steps.js";
 import {createLogger} from "./logger.js";
 
-const describeStep = (step) => typeof step === 'string' ? step : (step?.command ?? step?.type ?? 'unknown');
+export const describeStep = (step) => typeof step === 'string' ? step : (step?.command ?? step?.type ?? 'unknown');
 
 /**
  * @param repo
  * @param trigger - what started the deploy, used in logs only (e.g. "webhook github", "auto")
- * @returns {string[]} output of every step
+ * @returns {string[]} output of every step, with a `failed` property holding the number of failed steps
  */
 export function runSteps(repo, trigger = 'manual') {
     const logger = createLogger(repo);
@@ -37,5 +37,6 @@ export function runSteps(repo, trigger = 'manual') {
 
     const summary = `Deploy finished in ${Date.now() - deployStart}ms: ${steps.length - failed} succeeded, ${failed} failed`;
     failed ? logger.error(summary) : logger.success(summary);
+    stepResponses.failed = failed;
     return stepResponses;
 }

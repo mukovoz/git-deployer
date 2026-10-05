@@ -135,6 +135,19 @@ curl -X POST https://your-domain.com:port/deploy/custom/my-pet-project-productio
 
 
 
+### CLI
+You can run or check a deploy by hand from the service directory (it reads the same `config.yml`):
+```bash
+node cli.js list                                       # list repository ids from config.yml
+node cli.js deploy my-pet-project-production           # run the steps now, like a webhook deploy
+node cli.js deploy my-pet-project-production --dry-run # check path, git and steps without running anything
+npm run deploy -- my-pet-project-production            # same as `node cli.js deploy ...`
+```
+`--dry-run` checks that `path` is a git repository, fetches `origin/<branch>` to show whether there are new commits,
+and lists each step, flagging steps with an unknown `type`. It does not write the deploy log.
+The command exits with code `1` if a step fails (or the dry run finds a problem), so it can be used in scripts.
+The CLI runs in its own process, so a manual deploy can overlap an auto-mode deploy of the running service.
+
 ### Auto Mode
 Instead of (or in addition to) configuring a webhook, you can set `auto: true` on a repository. The service will
 then poll the remote on an interval — running `git fetch` and checking whether the tracked `branch` has new commits —
